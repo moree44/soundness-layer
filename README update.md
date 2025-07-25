@@ -41,9 +41,18 @@ soundness-cli generate-key
 curl -sSL https://raw.githubusercontent.com/yourusername/soundness-cli-installer/main/install-soundness.sh | bash
 ```
 
-# Verify installation
+Verify installation
+```bash
 soundness-cli --version
-soundness-cli --help
+```
+### Generate Your First Key
+
+```bash
+# Generate a new private key
+soundness-cli generate-key
+
+# List all your keys
+soundness-cli list-keys
 ```
 
 ## 🎯 What is Soundness Layer?
@@ -71,17 +80,6 @@ Soundness Layer is a **decentralized verification layer** built on:
 - ✅ **Git** installed
 - ✅ **Basic terminal knowledge**
 
-## 📖 Usage Guide
-
-### Generate Your First Key
-
-```bash
-# Generate a new private key
-soundness-cli generate-key
-
-# List all your keys
-soundness-cli list-keys
-```
 
 ### Basic Commands
 
