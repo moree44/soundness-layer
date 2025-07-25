@@ -12,14 +12,14 @@ Soundness Layer is a decentralized verification layer that provides low latency,
 ### Option 1: One-Line Installation
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/soundness-cli-installer/main/install-soundness.sh | bash
+curl -sSL https://raw.githubusercontent.com/moree44/soundness-cli-installer/main/install-soundness.sh | bash
 ```
 
 ### Option 2: Manual Installation
 
 ```bash
 # 1. Clone this repo
-git clone https://github.com/yourusername/soundness-cli-installer.git
+git clone https://github.com/moree44/soundness-cli-installer.git
 cd soundness-cli-installer
 
 # 2. Run installation script
@@ -38,7 +38,7 @@ soundness-cli generate-key
 4. Run our installation script:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/soundness-cli-installer/main/install-soundness.sh | bash
+curl -sSL https://raw.githubusercontent.com/moree44/soundness-cli-installer/main/install-soundness.sh | bash
 ```
 
 Verify installation
