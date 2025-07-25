@@ -19,79 +19,79 @@ success() { echo -e "${GREEN}[OK]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 BIN_DIR="$HOME/.local/bin"
-mkdir -p "$BIN_DIR"
+CONFIG_DIR="$HOME/.soundness"
+REPO_ROOT=$(pwd)
+mkdir -p "$BIN_DIR" "$CONFIG_DIR"/{keys,logs,config}
 export PATH="$BIN_DIR:$PATH"
 
-# STEP 0: Display system info
-info "System Info:"
-echo "OS: $(uname -a)"
-echo "User: $(whoami)"
-echo "PATH: $PATH"
-
-# STEP 1: Install dependencies
-info "Installing required packages..."
+# Step 1: Install dependencies
+info "Installing dependencies..."
 if command -v apt &> /dev/null; then
-    sudo apt update && sudo apt install -y curl git gcc build-essential pkg-config libssl-dev unzip
+  sudo apt update && sudo apt install -y curl git gcc build-essential pkg-config libssl-dev unzip
 elif command -v pacman &> /dev/null; then
-    sudo pacman -Sy --noconfirm curl git base-devel pkg-config openssl unzip
+  sudo pacman -Sy --noconfirm curl git base-devel pkg-config openssl unzip
 else
-    error "Unsupported package manager. Install dependencies manually."
-    exit 1
+  error "Unsupported package manager. Install deps manually."
+  exit 1
 fi
 success "Dependencies installed."
 
-# STEP 2: Install Rust (if not exists)
+# Step 2: Install Rust
 if ! command -v cargo &> /dev/null; then
-    info "Installing Rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
-    echo 'source "$HOME/.cargo/env"' >> ~/.bashrc
+  info "Installing Rust..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  echo 'source "$HOME/.cargo/env"' >> ~/.bashrc
+  source "$HOME/.cargo/env"
 else
-    info "Rust already installed."
-    source "$HOME/.cargo/env"
-    rustup update
+  info "Rust already installed."
+  source "$HOME/.cargo/env"
+  rustup update
 fi
 success "Rust is ready: $(rustc --version)"
 
-# STEP 3: Install soundnessup
-info "Installing soundnessup via forked repo installer..."
+# Step 3: Install soundnessup via forked repo
+info "Installing soundnessup via forked repo..."
 if curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/soundnessup/install | bash; then
-    source ~/.bashrc
-    if [ -f "$HOME/.soundness/bin/soundnessup" ]; then
-        ln -sf "$HOME/.soundness/bin/soundnessup" "$BIN_DIR/soundnessup"
-        chmod +x "$BIN_DIR/soundnessup"
-        success "soundnessup installed from your fork!"
-    fi
-else
-    error "Failed to install soundnessup via your repo. Trying local source build..."
-    # fallback build from local source
-    cd soundnessup
-    cargo build --release
-    cp target/release/soundnessup "$BIN_DIR/"
+  source ~/.bashrc
+  if [ -f "$HOME/.soundness/bin/soundnessup" ]; then
+    ln -sf "$HOME/.soundness/bin/soundnessup" "$BIN_DIR/soundnessup"
     chmod +x "$BIN_DIR/soundnessup"
-    success "soundnessup built from source!"
-fi
-
-# STEP 4: Install soundness-cli via soundnessup
-info "Installing soundness-cli using soundnessup..."
-if command -v soundnessup &> /dev/null; then
-    if soundnessup install || soundnessup install soundness-cli; then
-        success "soundness-cli installed!"
-    else
-        error "soundnessup couldn't install soundness-cli"
-    fi
+    success "soundnessup installed from your fork!"
+  fi
 else
-    error "soundnessup not found in PATH"
+  error "Failed to install soundnessup via curl. Trying build from source..."
+  cd "$REPO_ROOT/soundnessup"
+  cargo build --release
+  cp target/release/soundnessup "$BIN_DIR/"
+  chmod +x "$BIN_DIR/soundnessup"
+  cd "$REPO_ROOT"
+  success "soundnessup built from source!"
 fi
 
-# STEP 5: Post-install setup
-info "Setting up config directories..."
-mkdir -p "$HOME/.soundness"/{keys,logs,config}
-chmod 700 "$HOME/.soundness/keys"
+# Step 4: Install soundness-cli manually (since soundnessup install may fail)
+info "Installing soundness-cli from source..."
+cd "$REPO_ROOT/soundness-cli"
+cargo build --release
+cp target/release/soundness-cli "$BIN_DIR/"
+chmod +x "$BIN_DIR/soundness-cli"
+cd "$REPO_ROOT"
+success "soundness-cli built from source!"
 
-# STEP 6: Verify
+# Step 5: Verify install
 echo -e "\n📦 ${GREEN}Installed Tools:${NC}"
-command -v soundnessup && soundnessup --version || error "soundnessup missing"
-command -v soundness-cli && soundness-cli --version || error "soundness-cli missing"
 
-success "Install completed. Restart terminal or run: source ~/.bashrc"
+if command -v soundnessup &> /dev/null; then
+  success "soundnessup: $(soundnessup version || echo '✅ Exists, but version cmd limited')"
+else
+  error "soundnessup not found in PATH"
+fi
+
+if command -v soundness-cli &> /dev/null; then
+  success "soundness-cli: $(soundness-cli --version || echo '✅ Exists, but version cmd limited')"
+else
+  error "soundness-cli not found in PATH"
+fi
+
+# Step 6: Final message
+echo ""
+success "Install completed! Restart your terminal or run: source ~/.bashrc"
