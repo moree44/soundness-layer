@@ -1,8 +1,5 @@
-# 🚀 Soundness CLI - Easy Installation Guide
+#  Soundness CLI - Easy Installation Guide
 
-[![GitHub](https://img.shields.io/badge/GitHub-Soundness%20Layer-blue?logo=github)](https://github.com/SoundnessLabs/soundness-layer)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289da?logo=discord)](https://discord.gg/F4cGbdqgw8)
-[![Testnet](https://img.shields.io/badge/Network-Testnet-orange)](https://testnet.soundness.xyz)
 
 > **One-click installation script for Soundness CLI in GitHub Codespaces**
 
@@ -43,6 +40,7 @@ soundness-cli generate-key
 ```bash
 curl -sSL https://raw.githubusercontent.com/yourusername/soundness-cli-installer/main/install-soundness.sh | bash
 ```
+
 # Verify installation
 soundness-cli --version
 soundness-cli --help
