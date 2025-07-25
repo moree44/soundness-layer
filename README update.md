@@ -1,278 +1,185 @@
-#  Soundness CLI - Easy Installation Guide
+# Soundness CLI - One-Click Installation Guide
 
+> **Easily set up the Soundness CLI tool for testnet interaction. Designed for beginners and developers alike.**
 
-> **One-click installation script for Soundness CLI in GitHub Codespaces**
+Soundness Layer is a decentralized verification protocol that offers low latency, high throughput, and cross-chain compatibility. This guide will help you install and use the Soundness CLI in just a few steps.
 
-Soundness Layer is a decentralized verification layer that provides low latency, high throughput, and cross-chain compatibility for blockchain networks. This guide helps you set up the CLI tool quickly and easily.
+---
 
+##  Installation Methods
 
-## Installation Methods
-
-### Option 2: Manual Installation
+###  Option 1: Manual Installation
 
 ```bash
-# 1. Clone this repo
+# 1. Clone the repository
 git clone https://github.com/moree44/soundness-layer.git
 cd soundness-layer
 
-# 2. Run installation script
+# 2. Run the install script
 chmod +x install-soundness.sh
 ./install-soundness.sh
 
-# 3. Generate your first key
-soundness-cli generate-key
+# 3. Generate your first wallet key
+soundness-cli generate-key --name my-wallet
 ```
 
-### Option 3: GitHub Codespaces (Zero Setup)
+###  Option 2: GitHub Codespaces (Zero Setup)
 
-1. Open [Soundness Layer Repository](https://github.com/SoundnessLabs/soundness-layer)
-2. Click **"< > Code"** → **"Codespaces"** → **"Create codespace on main"**
-3. Wait for Codespace to load (2-5 minutes)
-4. Run our installation script:
+1. Go to [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
+2. Click **"<> Code"** → **"Codespaces"** → **"Create codespace on main"**
+3. Wait for environment to initialize
+4. Run the following install command:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/install-soundness.sh | bash
 ```
 
-Verify installation
+5. Verify installation:
+
 ```bash
 soundness-cli --version
+soundnessup version
 ```
-### Generate Your First Key
+
+---
+
+##  Managing Your Keys
+
+### Generate a New Key:
 
 ```bash
-# Generate a new private key
-soundness-cli generate-key --name <NAME>
-<Name> your name
+soundness-cli generate-key --name my-wallet
+```
 
-# List all your keys
+### List Your Keys:
+
+```bash
 soundness-cli list-keys
-Check you list-keys
 ```
 
-## 🎯 What is Soundness Layer?
-
-Soundness Layer is a **decentralized verification layer** built on:
-- **[Walrus](https://www.walrus.xyz/)** for data availability
-- **[Sui](https://sui.io/)** for sequencing
-
-### Key Features:
-- ✅ **Low Latency** - Fast transaction processing
-- ✅ **High Throughput** - Scalable for high volume
-- ✅ **Cross-Chain** - Works across different blockchains
-- ✅ **Secure** - Maintained through restaking protocol
-
-## 📦 Prerequisites
-
-### For GitHub Codespaces (Recommended):
-- ✅ **GitHub account**
-- ✅ **Web browser**
-- ✅ **Nothing else!** (All dependencies auto-installed)
-
-### For Local Installation:
-- ✅ **Linux/macOS** (Ubuntu 20.04+ recommended)
-- ✅ **Internet connection**
-- ✅ **Git** installed
-- ✅ **Basic terminal knowledge**
-
-
-### Basic Commands
+### Import Existing Mnemonic:
 
 ```bash
-# Show help
+soundness-cli import-key --name my-wallet --mnemonic "your twelve word seed here"
+```
+
+>  **Your keys are stored locally at:** `~/.soundness/keys/`
+
+---
+
+##  Prerequisites
+
+### GitHub Codespaces:
+
+* ✅ GitHub account
+* ✅ Web browser
+
+### Local Setup:
+
+* ✅ Linux/macOS (Ubuntu 20.04+ recommended)
+* ✅ Internet connection
+* ✅ Git & curl
+* ✅ Basic terminal usage
+
+---
+
+## 🔧 Common CLI Commands
+
+```bash
+# Show CLI help
 soundness-cli --help
 
-# Check version
-soundness-cli --version
-
-# Generate key with custom name
+# Generate key
 soundness-cli generate-key --name my-wallet
 
-# Send proofs (advanced usage)
+# Check installed version
+soundness-cli --version
+
+# Send proof (advanced)
 soundness-cli send --help
 ```
 
-### Configuration
+---
+
+##  Configuration & Endpoints
+
+* ✅ Default endpoint: `https://testnet.soundness.xyz`
+* ✅ All config and logs: `~/.soundness/`
+
+---
+
+## 🛠 Troubleshooting
+
+### Command not found: `soundness-cli`
 
 ```bash
-# Default endpoint (automatically configured)
-https://testnet.soundness.xyz
-
-# Check current configuration
-soundness-cli list-keys
-
-# All keys stored in:
-~/.soundness/keys/
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues & Solutions
-
-#### 1. **Command not found: soundness-cli**
-
-```bash
-# Solution 1: Update PATH
 source ~/.bashrc
-
-# Solution 2: Use full path
-./target/release/soundness-cli --help
-
-# Solution 3: Reinstall
-curl -sSL https://raw.githubusercontent.com/yourusername/soundness-cli-installer/main/install-soundness.sh | bash
 ```
 
-#### 2. **Build errors**
+### Missing dependencies:
 
 ```bash
-# Install missing dependencies
-sudo apt update
 sudo apt install -y build-essential pkg-config libssl-dev
+```
 
-# Clean and rebuild
+### Rust not found:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+```
+
+### Permission denied:
+
+```bash
+chmod +x ~/.local/bin/soundness-cli
+```
+
+### Rebuild manually:
+
+```bash
 cd soundness-layer/soundness-cli
-cargo clean
 cargo build --release
 ```
 
-#### 3. **Permission denied**
+---
+
+##  Backup Your Keys
 
 ```bash
-# Fix binary permissions
-chmod +x ~/.local/bin/soundness-cli
-
-# Or use sudo for global install
-sudo cp target/release/soundness-cli /usr/local/bin/
-```
-
-#### 4. **Rust not found**
-
-```bash
-# Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source ~/.cargo/env
-
-# Verify Rust installation
-rustc --version
-cargo --version
-```
-
-### Debug Mode
-
-```bash
-# Run script with verbose output
-bash -x install-soundness.sh
-
-# Check syntax before running
-bash -n install-soundness.sh
-```
-
-## 🌐 Community & Support
-
-### Official Links
-
--  **Website**: [soundness.xyz](https://soundness.xyz/)
--  **Discord**: [Join Community](https://discord.gg/F4cGbdqgw8)
--  **Telegram**: [SoundnessLabs](https://t.me/SoundnessLabs)
--  **X/Twitter**: [@SoundnessLabs](https://x.com/SoundnessLabs)
--  **GitHub**: [SoundnessLabs](https://github.com/SoundnessLabs/soundness-layer)
-
-### Getting Testnet Access
-
-1. **Join Discord**: https://discord.gg/F4cGbdqgw8
-2. **Go to #testnet-access** channel
-3. **Share your public key** (not private key!)
-4. **Follow team instructions** for testnet registration
-
-
-###  Important Security Reminders
-
-
-####
-- **Share private keys** in Discord/Telegram
-- **Use testnet keys** for mainnet (when available)
-- **Store keys** in plain text files
-- **Trust unofficial** installation sources
-- **Use for production** (this is testnet only)
-
-### File Locations
-
-```bash
-# CLI Binary
-~/.local/bin/soundness-cli
-
-# Configuration & Keys (encrypted)
-~/.soundness/keys/
-~/.soundness/logs/
-
-# Rust toolchain
-~/.cargo/bin/
-```
-
-### Backup Your Keys
-
-```bash
-# Create backup directory
 mkdir -p ~/soundness-backup
-
-# Copy keys (they're encrypted)
 cp ~/.soundness/keys/* ~/soundness-backup/
-
-# Or create tar archive
 tar -czf soundness-keys-backup.tar.gz ~/.soundness/keys/
 ```
 
+---
 
-## 🎯 Next Steps After Installation
 
-1. **Generate your first key**:
-   ```bash
-   soundness-cli generate-key
-   ```
+##  What is Soundness Layer?
 
-2. **Join the community**:
-   - Discord: https://discord.gg/F4cGbdqgw8
-   
-3. **Explore CLI features**:
-   ```bash
-   soundness-cli --help
-   soundness-cli send --help
-   ```
+Soundness is a **decentralized verification network**, built with:
 
-4. **Request testnet access** in Discord
+* 🔹 **[Walrus](https://www.walrus.xyz/)** for data availability
+* 🔹 **[Sui](https://sui.io/)** for sequencing
 
-5. **Start experimenting** with proofs and transactions
+### Highlights:
 
-## 🤝 Contributing
+* ⚡ **Low latency**
+* 🚀 **High throughput**
+* 🔗 **Cross-chain support**
+* 🔐 **Restaking-backed security**
 
-Found an issue or want to improve this guide?
+---
 
-1. **Fork this repository**
-2. **Create your feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
+---
 
 ## 📄 License
 
-This installation guide is provided under the [MIT License](LICENSE).
-
-The Soundness Layer project has its own license - check the [official repository](https://github.com/SoundnessLabs/soundness-layer) for details.
-
-## ⭐ Support This Project
-
-If this guide helped you, please:
-- ⭐ **Star this repository**
-- 🐦 **Share on social media**
-- 💬 **Join our Discord community**
-- 🍴 **Fork and contribute improvements**
+This guide is under the [MIT License](LICENSE). For the Soundness Layer codebase license, check the [official repository](https://github.com/SoundnessLabs/soundness-layer).
 
 ---
 
 <div align="center">
-
-**Made with ❤️ for the Soundness Community**
-
-[Website](https://soundness.xyz/) • [Discord](https://discord.gg/F4cGbdqgw8) • [GitHub](https://github.com/SoundnessLabs/soundness-layer)
-
+  Made with ❤️ for the Soundness Community  
+  [Website](https://soundness.xyz/) • [Discord](https://discord.gg/F4cGbdqgw8) • [GitHub](https://github.com/SoundnessLabs/soundness-layer)
 </div>
