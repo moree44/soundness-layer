@@ -54,23 +54,18 @@ fi
 success "Rust is ready: $(rustc --version)"
 
 # STEP 3: Install soundnessup
-info "Installing soundnessup via official installer..."
-if curl -sSL https://install.soundness.xyz | bash; then
+info "Installing soundnessup via forked repo installer..."
+if curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/soundnessup/install | bash; then
     source ~/.bashrc
     if [ -f "$HOME/.soundness/bin/soundnessup" ]; then
         ln -sf "$HOME/.soundness/bin/soundnessup" "$BIN_DIR/soundnessup"
         chmod +x "$BIN_DIR/soundnessup"
-        success "soundnessup installed!"
+        success "soundnessup installed from your fork!"
     fi
 else
-    error "Failed to install soundnessup via curl. Trying from source..."
-    # fallback build from source
-    if [ -d "soundnessup" ]; then
-        cd soundnessup
-    else
-        git clone https://github.com/SoundnessLabs/soundness-layer.git ~/soundness-layer
-        cd ~/soundness-layer/soundnessup
-    fi
+    error "Failed to install soundnessup via your repo. Trying local source build..."
+    # fallback build from local source
+    cd soundnessup
     cargo build --release
     cp target/release/soundnessup "$BIN_DIR/"
     chmod +x "$BIN_DIR/soundnessup"
