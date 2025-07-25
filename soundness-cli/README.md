@@ -139,6 +139,21 @@ The public key will be displayed in the format:
 🔑 Public key: <base64-encoded-public-key>
 ```
 
+### Importing a Key Pair
+
+If you saved your mnemonic previously, you can import it to `key_store.json` by using following command:
+
+```bash
+soundness-cli import-key --name <name> --mnemonic "<mnemonic>"
+```
+
+If it was successful you'll get:
+
+```bash
+✅ Imported key pair '<imported-key-name>'
+🔑 Public key: <base64-encoded-public-key>
+```
+
 ### Listing Key Pairs
 
 To view all stored key pairs:

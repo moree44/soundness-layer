@@ -64,6 +64,12 @@ enum Commands {
         #[arg(short = 'g', long, value_parser = clap::value_parser!(Game))]
         game: Option<Game>,
     },
+    ImportKey {
+        #[arg(short, long)]
+        name: String,
+        #[arg(short, long)]
+        mnemonic: String,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
@@ -244,6 +250,56 @@ fn generate_key_pair(name: &str) -> Result<()> {
 
     save_key_store(&key_store)?;
     println!("\n✅ Generated new key pair '{}'", name);
+    println!("🔑 Public key: {}", public_key_string);
+    Ok(())
+}
+
+fn import_key_pair(name: &str, mnemonic: &str) -> Result<()> {
+    let mut key_store = load_key_store()?;
+
+    if key_store.keys.contains_key(name) {
+        anyhow::bail!("Key pair with name '{}' already exists", name);
+    }
+
+    // Convert mnemonic to entropy
+    let mnemonic = bip39::Mnemonic::from_str(mnemonic)
+        .map_err(|e| anyhow::anyhow!("Invalid mnemonic: {}", e))?;
+    let entropy = mnemonic.to_entropy();
+
+    // Create secret key from entropy
+    let secret_key_array: [u8; 32] = entropy
+        .try_into()
+        .map_err(|_| anyhow::anyhow!("Invalid entropy length"))?;
+    let signing_key = SigningKey::from_bytes(&secret_key_array);
+    let verifying_key = signing_key.verifying_key();
+    let public_key_bytes = verifying_key.to_bytes();
+    let public_key_string = BASE64.encode(&public_key_bytes);
+
+    // Get password for secret key encryption
+    let password = prompt_password("\nEnter password for secret key: ")
+        .map_err(|e| anyhow::anyhow!("Failed to read password: {}", e))?;
+    let confirm_password = prompt_password("Confirm password: ")
+        .map_err(|e| anyhow::anyhow!("Failed to read password: {}", e))?;
+
+    if password != confirm_password {
+        anyhow::bail!("Passwords do not match");
+    }
+
+    // Encrypt the secret key
+    let encrypted_secret = encrypt_secret_key(&secret_key_array, &password)?;
+
+    // Save the key pair
+    key_store.keys.insert(
+        name.to_string(),
+        KeyPair {
+            public_key: public_key_bytes.to_vec(),
+            public_key_string: public_key_string.clone(),
+            encrypted_secret_key: Some(encrypted_secret),
+        },
+    );
+
+    save_key_store(&key_store)?;
+    println!("\n✅ Imported key pair '{}'", name);
     println!("🔑 Public key: {}", public_key_string);
     Ok(())
 }
@@ -628,6 +684,9 @@ async fn main() -> Result<()> {
                 let error_text = response.text().await?;
                 println!("Error details: {}", error_text);
             }
+        }
+        Commands::ImportKey { name, mnemonic } => {
+            import_key_pair(&name, &mnemonic)?;
         }
     }
 
