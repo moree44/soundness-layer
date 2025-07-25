@@ -8,13 +8,6 @@ Soundness Layer is a decentralized verification layer that provides low latency,
 
 ## Installation Methods
 
-
-### Option 1: One-Line Installation
-
-```bash
-curl -sSL https://raw.githubusercontent.com/moree44/soundness-cli-installer/main/install-soundness.sh | bash
-```
-
 ### Option 2: Manual Installation
 
 ```bash
@@ -49,10 +42,12 @@ soundness-cli --version
 
 ```bash
 # Generate a new private key
-soundness-cli generate-key
+soundness-cli generate-key --name <NAME>
+<Name> your name
 
 # List all your keys
 soundness-cli list-keys
+Check you list-keys
 ```
 
 ## 🎯 What is Soundness Layer?
