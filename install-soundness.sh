@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # =============================================================================
-# Soundness CLI - Universal Installation Script
+# Soundness CLI - Universal Installation Script (Using soundnessup)
 # Compatible with: Linux, WSL, GitHub Codespaces, Docker containers
 # =============================================================================
 
 set -e  # Exit on any error
 
-echo "🚀 Starting Soundness CLI Universal Installation..."
-echo "=================================================="
+echo "🚀 Starting Soundness CLI Installation via soundnessup..."
+echo "======================================================="
 
 # Colors for output
 RED='\033[0;31m'
@@ -60,32 +60,6 @@ if [[ $EUID -eq 0 ]] && [[ "$ENV_TYPE" != "docker" ]] && [[ "$ENV_TYPE" != "code
    print_error "This script should not be run as root for security reasons!"
    exit 1
 fi
-
-# Set workspace directory based on environment
-set_workspace_dir() {
-    case "$ENV_TYPE" in
-        "codespaces")
-            WORKSPACE_DIR="/workspaces/soundness-layer"
-            ;;
-        "wsl"|"docker"|"linux")
-            # Try multiple possible locations
-            if [ -d "/workspaces/soundness-layer" ]; then
-                WORKSPACE_DIR="/workspaces/soundness-layer"
-            elif [ -d "$HOME/soundness-layer" ]; then
-                WORKSPACE_DIR="$HOME/soundness-layer"
-            elif [ -d "./soundness-layer" ]; then
-                WORKSPACE_DIR="$(pwd)/soundness-layer"
-            elif [ -d "$(pwd)" ] && [ -f "$(pwd)/soundness-cli/Cargo.toml" ]; then
-                WORKSPACE_DIR="$(pwd)"
-            else
-                WORKSPACE_DIR=""
-            fi
-            ;;
-        *)
-            WORKSPACE_DIR=""
-            ;;
-    esac
-}
 
 # Step 1: Update system and install dependencies
 print_header "Step 1: Installing system dependencies..."
@@ -220,114 +194,12 @@ else
     exit 1
 fi
 
-# Step 3: Setup project directory structure
-print_header "Step 3: Locating project directory..."
-
-set_workspace_dir
-
-if [ -z "$WORKSPACE_DIR" ]; then
-    print_error "Could not find soundness-layer project directory!"
-    print_error "Please ensure you're in one of these locations:"
-    print_error "  - /workspaces/soundness-layer (Codespaces)"
-    print_error "  - ~/soundness-layer (WSL/Linux)"
-    print_error "  - Current directory with soundness-cli folder"
-    print_error ""
-    print_status "Or clone the repository first:"
-    print_status "git clone <repository-url> soundness-layer"
-    exit 1
-fi
-
-if [ ! -d "$WORKSPACE_DIR" ]; then
-    print_error "Workspace directory not found: $WORKSPACE_DIR"
-    exit 1
-fi
-
-cd "$WORKSPACE_DIR"
-print_status "Working in: $(pwd)"
-
-# Step 4: Build soundness-cli
-print_header "Step 4: Building soundness-cli..."
-
-build_component() {
-    local component=$1
-    local component_dir="$WORKSPACE_DIR/$component"
-    
-    if [ -d "$component_dir" ]; then
-        print_status "Building $component..."
-        cd "$component_dir"
-        
-        # Verify Cargo.toml exists
-        if [ ! -f "Cargo.toml" ]; then
-            print_error "Cargo.toml not found in $component directory!"
-            return 1
-        fi
-        
-        # Clean previous builds for fresh start
-        cargo clean &>/dev/null || true
-        
-        # Build with proper error handling
-        print_status "Compiling $component (this may take 2-5 minutes)..."
-        if cargo build --release; then
-            # Verify build succeeded
-            if [ -f "target/release/$component" ]; then
-                print_success "$component built successfully!"
-                return 0
-            else
-                print_error "$component build completed but binary not found!"
-                return 1
-            fi
-        else
-            print_error "$component build failed!"
-            return 1
-        fi
-    else
-        print_warning "$component directory not found, skipping..."
-        return 1
-    fi
-}
-
-# Build both components
-SOUNDNESS_CLI_BUILT=false
-SOUNDNESSUP_BUILT=false
-
-if build_component "soundness-cli"; then
-    SOUNDNESS_CLI_BUILT=true
-fi
-
-cd "$WORKSPACE_DIR"
-
-if build_component "soundnessup"; then
-    SOUNDNESSUP_BUILT=true
-fi
-
-cd "$WORKSPACE_DIR"
-
-# Ensure at least one component was built
-if [ "$SOUNDNESS_CLI_BUILT" = false ] && [ "$SOUNDNESSUP_BUILT" = false ]; then
-    print_error "No components were successfully built!"
-    exit 1
-fi
-
-# Step 5: Install binaries globally
-print_header "Step 5: Installing binaries globally..."
+# Step 3: Setup local bin directory and PATH
+print_header "Step 3: Setting up binary directories..."
 
 # Create local bin directory
 BIN_DIR="$HOME/.local/bin"
 mkdir -p "$BIN_DIR"
-
-# Install soundness-cli
-if [ "$SOUNDNESS_CLI_BUILT" = true ] && [ -f "soundness-cli/target/release/soundness-cli" ]; then
-    cp soundness-cli/target/release/soundness-cli "$BIN_DIR/"
-    chmod +x "$BIN_DIR/soundness-cli"
-    print_success "soundness-cli installed to $BIN_DIR/"
-fi
-
-# Install soundnessup
-if [ "$SOUNDNESSUP_BUILT" = true ] && [ -f "soundnessup/target/release/soundnessup" ]; then
-    cp soundnessup/target/release/soundnessup "$BIN_DIR/"
-    chmod +x "$BIN_DIR/soundnessup"
-    print_success "soundnessup installed to $BIN_DIR/"
-fi
 
 # Add to PATH for multiple shells
 add_to_path() {
@@ -347,6 +219,126 @@ done
 
 # Update current session PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+print_success "Binary directories configured!"
+
+# Step 4: Install soundnessup first
+print_header "Step 4: Installing soundnessup tool..."
+
+# Function to build soundnessup from source if needed
+build_soundnessup_from_source() {
+    print_status "Building soundnessup from source..."
+    
+    # Check if we're in the right workspace or need to clone
+    WORKSPACE_DIR=""
+    
+    if [ -d "/workspaces/soundness-layer" ]; then
+        WORKSPACE_DIR="/workspaces/soundness-layer"
+    elif [ -d "$HOME/soundness-layer" ]; then
+        WORKSPACE_DIR="$HOME/soundness-layer"
+    elif [ -d "./soundness-layer" ]; then
+        WORKSPACE_DIR="$(pwd)/soundness-layer"
+    elif [ -d "$(pwd)" ] && [ -f "$(pwd)/soundnessup/Cargo.toml" ]; then
+        WORKSPACE_DIR="$(pwd)"
+    else
+        # Try to clone the repository
+        print_status "Cloning soundness-layer repository..."
+        if command -v git &> /dev/null; then
+            cd "$HOME"
+            git clone https://github.com/SoundnessLabs/soundness-layer.git || {
+                print_error "Failed to clone repository"
+                return 1
+            }
+            WORKSPACE_DIR="$HOME/soundness-layer"
+        else
+            print_error "Git not available and no existing project directory found"
+            return 1
+        fi
+    fi
+    
+    if [ ! -d "$WORKSPACE_DIR/soundnessup" ]; then
+        print_error "soundnessup directory not found in $WORKSPACE_DIR"
+        return 1
+    fi
+    
+    cd "$WORKSPACE_DIR/soundnessup"
+    
+    if [ ! -f "Cargo.toml" ]; then
+        print_error "Cargo.toml not found in soundnessup directory!"
+        return 1
+    fi
+    
+    # Build soundnessup
+    print_status "Building soundnessup (this may take 2-5 minutes)..."
+    if cargo build --release; then
+        if [ -f "target/release/soundnessup" ]; then
+            # Install soundnessup to local bin
+            cp target/release/soundnessup "$BIN_DIR/"
+            chmod +x "$BIN_DIR/soundnessup"
+            print_success "soundnessup built and installed successfully!"
+            return 0
+        else
+            print_error "soundnessup build completed but binary not found!"
+            return 1
+        fi
+    else
+        print_error "soundnessup build failed!"
+        return 1
+    fi
+}
+
+# Try to install soundnessup via official installer first, fallback to source build
+SOUNDNESSUP_INSTALLED=false
+
+print_status "Trying official soundnessup installer..."
+if curl -sSL https://install.soundness.xyz | bash; then
+    print_success "soundnessup installed via official installer!"
+    SOUNDNESSUP_INSTALLED=true
+    
+    # Ensure it's in PATH
+    if [ -f "$HOME/.soundness/bin/soundnessup" ]; then
+        ln -sf "$HOME/.soundness/bin/soundnessup" "$BIN_DIR/soundnessup"
+    fi
+else
+    print_warning "Official installer failed, trying source build..."
+    if build_soundnessup_from_source; then
+        SOUNDNESSUP_INSTALLED=true
+    else
+        print_error "Failed to install soundnessup via both methods"
+        exit 1
+    fi
+fi
+
+# Update PATH again to ensure soundnessup is available
+export PATH="$HOME/.local/bin:$PATH"
+
+# Step 5: Install soundness-cli using soundnessup
+print_header "Step 5: Installing soundness-cli using soundnessup..."
+
+if [ "$SOUNDNESSUP_INSTALLED" = true ]; then
+    print_status "Using soundnessup to install soundness-cli..."
+    
+    if command -v soundnessup &> /dev/null; then
+        # Try to install soundness-cli using soundnessup
+        if soundnessup install; then
+            print_success "soundness-cli installed successfully via soundnessup!"
+        else
+            print_warning "soundnessup install failed, trying alternative method..."
+            if soundnessup install soundness-cli; then
+                print_success "soundness-cli installed successfully via soundnessup!"
+            else
+                print_error "Failed to install soundness-cli via soundnessup"
+                exit 1
+            fi
+        fi
+    else
+        print_error "soundnessup not found in PATH after installation"
+        exit 1
+    fi
+else
+    print_error "soundnessup not available, cannot install soundness-cli"
+    exit 1
+fi
 
 # Step 6: Setup configuration directories
 print_header "Step 6: Creating configuration directories..."
@@ -370,31 +362,27 @@ echo ""
 echo "📋 Installation Verification:"
 echo "============================"
 
-# Test soundness-cli
-if command -v soundness-cli &> /dev/null; then
-    print_success "✅ soundness-cli is available globally"
-    VERSION=$(soundness-cli --version 2>/dev/null || echo 'Version not available')
-    echo "   Version: $VERSION"
-else
-    if [ "$SOUNDNESS_CLI_BUILT" = true ]; then
-        print_warning "⚠️  soundness-cli built but not in PATH"
-        echo "   Manual path: $BIN_DIR/soundness-cli"
-    else
-        print_warning "❌ soundness-cli not built"
-    fi
-fi
-
 # Test soundnessup
 if command -v soundnessup &> /dev/null; then
     print_success "✅ soundnessup is available globally"
     VERSION=$(soundnessup --version 2>/dev/null || echo 'Version not available')
     echo "   Version: $VERSION"
 else
-    if [ "$SOUNDNESSUP_BUILT" = true ]; then
-        print_warning "⚠️  soundnessup built but not in PATH"
-        echo "   Manual path: $BIN_DIR/soundnessup"
-    else
-        print_warning "❌ soundnessup not built"
+    print_warning "⚠️  soundnessup not found in PATH"
+fi
+
+# Test soundness-cli
+if command -v soundness-cli &> /dev/null; then
+    print_success "✅ soundness-cli is available globally"
+    VERSION=$(soundness-cli --version 2>/dev/null || echo 'Version not available')
+    echo "   Version: $VERSION"
+else
+    print_warning "⚠️  soundness-cli not found in PATH"
+    
+    # Check if it's installed via soundnessup in a different location
+    if [ -f "$HOME/.soundness/bin/soundness-cli" ]; then
+        ln -sf "$HOME/.soundness/bin/soundness-cli" "$BIN_DIR/soundness-cli"
+        print_status "Created symlink for soundness-cli"
     fi
 fi
 
@@ -405,24 +393,16 @@ echo ""
 echo "📖 Command Help:"
 echo "================"
 
-if command -v soundness-cli &> /dev/null || [ -f "$BIN_DIR/soundness-cli" ]; then
-    echo ""
-    echo "🔧 soundness-cli commands:"
-    if command -v soundness-cli &> /dev/null; then
-        soundness-cli --help 2>/dev/null | head -20 || echo "Help not available"
-    else
-        echo "   Use: $BIN_DIR/soundness-cli --help"
-    fi
-fi
-
-if command -v soundnessup &> /dev/null || [ -f "$BIN_DIR/soundnessup" ]; then
+if command -v soundnessup &> /dev/null; then
     echo ""
     echo "🚀 soundnessup commands:"
-    if command -v soundnessup &> /dev/null; then
-        soundnessup --help 2>/dev/null | head -20 || echo "Help not available"
-    else
-        echo "   Use: $BIN_DIR/soundnessup --help"
-    fi
+    soundnessup --help 2>/dev/null | head -20 || echo "Help not available"
+fi
+
+if command -v soundness-cli &> /dev/null; then
+    echo ""
+    echo "🔧 soundness-cli commands:"
+    soundness-cli --help 2>/dev/null | head -20 || echo "Help not available"
 fi
 
 # Final summary
@@ -432,39 +412,34 @@ echo "========================="
 echo ""
 echo "📋 What's installed:"
 echo "  ✅ Rust toolchain ($(rustc --version | cut -d' ' -f2))"
-if [ "$SOUNDNESS_CLI_BUILT" = true ]; then
-    echo "  ✅ soundness-cli binary"
+if command -v soundnessup &> /dev/null; then
+    echo "  ✅ soundnessup tool"
 else
-    echo "  ❌ soundness-cli binary (build failed)"
+    echo "  ❌ soundnessup tool (installation failed)"
 fi
-if [ "$SOUNDNESSUP_BUILT" = true ]; then
-    echo "  ✅ soundnessup binary"
+if command -v soundness-cli &> /dev/null; then
+    echo "  ✅ soundness-cli (via soundnessup)"
 else
-    echo "  ❌ soundnessup binary (not found or build failed)"
+    echo "  ❌ soundness-cli (installation failed)"
 fi
 echo "  ✅ Configuration directories"
 echo "  ✅ PATH setup for multiple shells"
 echo ""
 echo "🌍 Environment: $ENV_TYPE"
-echo "📁 Workspace: $WORKSPACE_DIR"
 echo "🔧 Binaries: $BIN_DIR"
 echo "⚙️  Config: $CONFIG_DIR"
 echo ""
 echo "🔧 Quick Start Commands:"
 if command -v soundness-cli &> /dev/null; then
-    echo "  • Generate key: soundness-cli generate-key --name <NAME>"
+    echo "  • Generate key: soundness-cli generate-key --name <name>"
     echo "  • List keys: soundness-cli list-keys"
-else
-    echo "  • Generate key: $BIN_DIR/soundness-cli generate-key --name <NAME>"
-    echo "  • List keys: $BIN_DIR/soundness-cli list-keys"
+    echo "  • Get help: soundness-cli --help"
 fi
 
 if command -v soundnessup &> /dev/null; then
-    echo "  • Start soundness: soundnessup start"
-    echo "  • Stop soundness: soundnessup stop"
-elif [ "$SOUNDNESSUP_BUILT" = true ]; then
-    echo "  • Start soundness: $BIN_DIR/soundnessup start"
-    echo "  • Stop soundness: $BIN_DIR/soundnessup stop"
+    echo "  • Update CLI: soundnessup update"
+    echo "  • Uninstall: soundnessup uninstall"
+    echo "  • Get help: soundnessup --help"
 fi
 
 echo ""
@@ -504,10 +479,10 @@ echo ""
 echo "🔄 If commands not found, try:"
 echo "   • Restart your terminal"
 echo "   • Run: source ~/.bashrc (or ~/.zshrc)"
-echo "   • Use manual paths shown above"
+echo "   • Check: echo \$PATH | grep .local/bin"
 echo ""
 
-print_success "Universal installation completed! 🚀"
+print_success "Soundness CLI installation via soundnessup completed! 🚀"
 
 # Optional environment check
 if [ "$ENV_TYPE" = "wsl" ] || [ "$ENV_TYPE" = "linux" ]; then
