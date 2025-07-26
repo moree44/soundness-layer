@@ -16,9 +16,14 @@ Soundness Layer is a decentralized verification protocol offering low latency, h
 ```bash
 curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/install-soundness.sh | bash
 ```
-5. Verify installation:
+5. **Reload your shell:**
+```bash
+source ~/.bashrc
+```
+6. Verify installation:
 ```bash
 soundness-cli --version
+soundnessup version
 ```
 
 ### Option 2: Manual Installation
@@ -28,6 +33,10 @@ git clone https://github.com/moree44/soundness-layer.git
 cd soundness-layer
 chmod +x install-soundness.sh
 ./install-soundness.sh
+```
+**After installation, reload your shell:**
+```bash
+source ~/.bashrc
 ```
 
 ---
