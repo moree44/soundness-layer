@@ -23,7 +23,6 @@ source ~/.bashrc
 6. Verify installation:
 ```bash
 soundness-cli --version
-soundnessup version
 ```
 
 ### Option 2: Manual Installation
@@ -60,7 +59,7 @@ Play supported games on the Soundness testnet to generate proofs. After winning,
 
 **Example: What you'll receive after winning a game:**
 
-![Soundness CLI Send Command Example](]https://imgur.com/rMxXVxC.png)
+![Soundness CLI Send Command Example](https://i.imgur.com/rMxXVxC.png)
 
 *Simply copy and paste the complete command provided by the system - it includes your proof blob ID and all necessary parameters!*
 
