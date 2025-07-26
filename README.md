@@ -62,6 +62,12 @@ soundness-cli list-keys
 ### Step 2: Play Games & Get Proofs
 Play supported games on the Soundness testnet to generate proofs. After winning, you'll receive a **Walrus Blob ID** for your proof.
 
+**Example: What you'll receive after winning a game:**
+
+![Soundness CLI Send Command Example](images/cli-send-example.png)
+
+*The system will provide you with the complete command including your proof blob ID and all necessary parameters.*
+
 ### Step 3: Submit Your Proof for Verification
 Once you have your proof and Blob ID, submit it for verification:
 
@@ -160,8 +166,6 @@ tar -czf soundness-keys-backup.tar.gz ~/.soundness/keys/
 Soundness is a **decentralized verification network** built with:
 - **[Walrus](https://www.walrus.xyz/)** for data availability
 - **[Sui](https://sui.io/)** for sequencing
-
----
 
 ## 📄 License
 
