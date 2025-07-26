@@ -1,139 +1,138 @@
-# Soundness CLI - One-Click Installation Guide
+# Soundness CLI - Installation & Usage Guide
 
-> **Easily set up the Soundness CLI tool for testnet interaction**
+> **Easy setup guide for the Soundness CLI tool on testnet**
 
-Soundness Layer is a decentralized verification protocol that offers low latency, high throughput, and cross-chain compatibility. This guide will help you install and use the Soundness CLI in just a few steps.
+Soundness Layer is a decentralized verification protocol offering low latency, high throughput, and cross-chain compatibility.
 
 ---
 
-##  Installation Methods
+## 🚀 Quick Installation
 
-###  Option 1: Manual Installation
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/moree44/soundness-layer.git
-cd soundness-layer
-
-# 2. Run the install script
-chmod +x install-soundness.sh
-./install-soundness.sh
-
-# 3. Generate your first wallet key
-soundness-cli generate-key --name my-wallet
-```
-
-###  Option 2: GitHub Codespaces (Zero Setup)
-
-1. Go to [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
+### Option 1: GitHub Codespaces (Recommended - Zero Setup)
+1. Visit the [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
 2. Click **"<> Code"** → **"Codespaces"** → **"Create codespace on main"**
-3. Wait for the environment to initialize
-4. Run the following install command:
-
+3. Wait for environment setup
+4. Install with one command:
 ```bash
 curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/install-soundness.sh | bash
 ```
-
 5. Verify installation:
-
 ```bash
 soundness-cli --version
-soundnessup version
+```
+
+### Option 2: Manual Installation
+```bash
+# Clone and install
+git clone https://github.com/moree44/soundness-layer.git
+cd soundness-layer
+chmod +x install-soundness.sh
+./install-soundness.sh
 ```
 
 ---
 
-##  Managing Your Keys
+## 📋 Prerequisites
 
-### Generate a New Key:
+**For GitHub Codespaces:**
+- GitHub account
+- Web browser
 
+**For Local Setup:**
+- Linux/macOS (Ubuntu 20.04+ recommended)
+- Git & curl installed
+- Internet connection
+
+---
+
+## 🔑 Step-by-Step Usage
+
+### Step 1: Generate Your Wallet Key
 ```bash
+# Create a new wallet
 soundness-cli generate-key --name my-wallet
-```
-### Import Existing Mnemonic:
 
-```bash
+# Or import existing mnemonic
 soundness-cli import-key --name my-wallet --mnemonic "your twelve word seed here"
-```
-### List Your Keys:
 
-```bash
+# List all keys
 soundness-cli list-keys
 ```
->  **Your keys are stored locally at:** `~/.soundness/keys/`
 
----
+### Step 2: Play Games & Get Proofs
+Play supported games on the Soundness testnet to generate proofs. After winning, you'll receive a **Walrus Blob ID** for your proof.
 
-##  Prerequisites
-
-### GitHub Codespaces:
-
-* ✅ GitHub account
-* ✅ Web browser
-
-### Local Setup:
-
-* ✅ Linux/macOS (Ubuntu 20.04+ recommended)
-* ✅ Internet connection
-* ✅ Git & curl
-* ✅ Basic terminal usage
-
----
-
-## 🔧 Common CLI Commands
+### Step 3: Submit Your Proof for Verification
+Once you have your proof and Blob ID, submit it for verification:
 
 ```bash
-# Show CLI help
-soundness-cli --help
+soundness-cli send --proof-file <proof-blob-id> --game <game-name> --key-name <your-key-name> --proving-system ligetron --payload '<json-payload>'
+```
 
-# Generate key
-soundness-cli generate-key --name my-wallet
+**Command Parameters:**
+- `--proof-file` (`-p`): Your unique Walrus Blob ID received after winning
+- `--game` (`-g`): Game name (e.g., `8queens`, `tictactoe`)
+- `--key-name` (`-k`): Your wallet key name from Step 1
+- `--proving-system` (`-s`): Use `ligetron` for current testnet games
+- `--payload` (`-d`): JSON string with verification inputs
 
-# Check installed version
-soundness-cli --version
-
-# Send proof (advanced)
-soundness-cli send --help
+**Example:**
+```bash
+soundness-cli send --proof-file abc123xyz --game tictactoe --key-name my-wallet --proving-system ligetron --payload '{"input": "game_data"}'
 ```
 
 ---
 
-##  Configuration & Endpoints
+## 🔧 Essential Commands
 
-* ✅ Default endpoint: `https://testnet.soundness.xyz`
-* ✅ All config and logs: `~/.soundness/`
+```bash
+# Show help
+soundness-cli --help
+
+# Check version
+soundness-cli --version
+
+# View send command options
+soundness-cli send --help
+
+# List your keys
+soundness-cli list-keys
+```
+
+---
+
+## 📁 File Locations
+
+- **Keys:** `~/.soundness/keys/`
+- **Config & Logs:** `~/.soundness/`
+- **Default Endpoint:** `https://testnet.soundness.xyz`
 
 ---
 
 ## 🛠 Troubleshooting
 
-### Command not found: `soundness-cli`
-
+**Command not found:**
 ```bash
 source ~/.bashrc
 ```
 
-### Missing dependencies:
-
+**Missing dependencies:**
 ```bash
 sudo apt install -y build-essential pkg-config libssl-dev
 ```
 
-### Rust not found:
-
+**Rust not installed:**
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source ~/.cargo/env
 ```
 
-### Permission denied:
-
+**Permission issues:**
 ```bash
 chmod +x ~/.local/bin/soundness-cli
 ```
 
-### Rebuild manually:
-
+**Manual rebuild:**
 ```bash
 cd soundness-layer/soundness-cli
 cargo build --release
@@ -141,42 +140,35 @@ cargo build --release
 
 ---
 
-##  Backup Your Keys
+## 💾 Backup Your Keys
 
 ```bash
+# Create backup directory
 mkdir -p ~/soundness-backup
+
+# Copy keys
 cp ~/.soundness/keys/* ~/soundness-backup/
+
+# Create compressed backup
 tar -czf soundness-keys-backup.tar.gz ~/.soundness/keys/
 ```
 
 ---
 
+## 🔍 About Soundness Layer
 
-##  What is Soundness Layer?
-
-Soundness is a **decentralized verification network**, built with:
-
-* 🔹 **[Walrus](https://www.walrus.xyz/)** for data availability
-* 🔹 **[Sui](https://sui.io/)** for sequencing
-
-### Highlights:
-
-* ⚡ **Low latency**
-* 🚀 **High throughput**
-* 🔗 **Cross-chain support**
-* 🔐 **Restaking-backed security**
-
----
+Soundness is a **decentralized verification network** built with:
+- **[Walrus](https://www.walrus.xyz/)** for data availability
+- **[Sui](https://sui.io/)** for sequencing
 
 ---
 
 ## 📄 License
 
-This guide is under the [MIT License](LICENSE). For the Soundness Layer codebase license, check the [official repository](https://github.com/SoundnessLabs/soundness-layer).
+This guide is under the [MIT License](LICENSE). For Soundness Layer codebase license, check the [official repository](https://github.com/SoundnessLabs/soundness-layer).
 
 ---
 
 <div align="center">
-  Made with ❤️ for the Soundness Community  
-  [Website](https://soundness.xyz/) • [Discord](https://discord.gg/F4cGbdqgw8) • [GitHub](https://github.com/SoundnessLabs/soundness-layer)
+  Made with ❤️ for the Soundness Community
 </div>
