@@ -6,7 +6,7 @@ Soundness Layer is a decentralized verification protocol offering low latency, h
 
 ---
 
-## 🚀 Quick Installation
+## Quick Installation
 
 ### Option 1: GitHub Codespaces (Recommended - Zero Setup)
 1. Visit the [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
@@ -32,20 +32,7 @@ chmod +x install-soundness.sh
 
 ---
 
-## 📋 Prerequisites
-
-**For GitHub Codespaces:**
-- GitHub account
-- Web browser
-
-**For Local Setup:**
-- Linux/macOS (Ubuntu 20.04+ recommended)
-- Git & curl installed
-- Internet connection
-
----
-
-## 🔑 Step-by-Step Usage
+## Step-by-Step Usage
 
 ### Step 1: Generate Your Wallet Key
 ```bash
@@ -59,37 +46,18 @@ soundness-cli import-key --name my-wallet --mnemonic "your twelve word seed here
 soundness-cli list-keys
 ```
 
-### Step 2: Play Games & Get Proofs
-Play supported games on the Soundness testnet to generate proofs. After winning, you'll receive a **Walrus Blob ID** for your proof.
+### Step 2: Play Games & Submit Proofs
+Play supported games on the Soundness testnet to generate proofs. After winning, the system will automatically provide you with a **ready-to-use command** for proof submission.
 
 **Example: What you'll receive after winning a game:**
 
 ![Soundness CLI Send Command Example](https://github.com/moree44/soundness-layer/blob/main/Screenshot%202025-07-26%20160945.png)
 
-*The system will provide you with the complete command including your proof blob ID and all necessary parameters - simply copy and paste the provided command.*
-
-### Step 3: Submit Your Proof for Verification
-Once you have your proof and Blob ID, submit it for verification:
-
-```bash
-soundness-cli send --proof-file <proof-blob-id> --game <game-name> --key-name <your-key-name> --proving-system ligetron --payload '<json-payload>'
-```
-
-**Command Parameters:**
-- `--proof-file` (`-p`): Your unique Walrus Blob ID received after winning
-- `--game` (`-g`): Game name (e.g., `8queens`, `tictactoe`)
-- `--key-name` (`-k`): Your wallet key name from Step 1
-- `--proving-system` (`-s`): Use `ligetron` for current testnet games
-- `--payload` (`-d`): JSON string with verification inputs
-
-**Example:**
-```bash
-soundness-cli send --proof-file abc123xyz --game tictactoe --key-name my-wallet --proving-system ligetron --payload '{"input": "game_data"}'
-```
+*Simply copy and paste the complete command provided by the system - it includes your proof blob ID and all necessary parameters!*
 
 ---
 
-## 🔧 Essential Commands
+## Essential Commands
 
 ```bash
 # Show help
@@ -107,7 +75,7 @@ soundness-cli list-keys
 
 ---
 
-## 📁 File Locations
+## File Locations
 
 - **Keys:** `~/.soundness/keys/`
 - **Config & Logs:** `~/.soundness/`
@@ -115,7 +83,7 @@ soundness-cli list-keys
 
 ---
 
-## 🛠 Troubleshooting
+## Troubleshooting
 
 **Command not found:**
 ```bash
@@ -146,7 +114,7 @@ cargo build --release
 
 ---
 
-## 💾 Backup Your Keys
+## Backup Your Keys
 
 ```bash
 # Create backup directory
@@ -161,21 +129,21 @@ tar -czf soundness-keys-backup.tar.gz ~/.soundness/keys/
 
 ---
 
-## 🔍 About Soundness Layer
+## About Soundness Layer
 
 Soundness is a **decentralized verification network** built with:
 - **[Walrus](https://www.walrus.xyz/)** for data availability
 - **[Sui](https://sui.io/)** for sequencing
 
 **Key Features:**
-- ⚡ Low latency verification
-- 🚀 High throughput processing
-- 🔗 Cross-chain compatibility
-- 🔐 Restaking-backed security
+- Low latency verification
+- High throughput processing
+- Cross-chain compatibility
+- Restaking-backed security
 
 ---
 
-## 📞 Support & Community
+## Support & Community
 
 - [Website](https://soundness.xyz/)
 - [Discord](https://discord.gg/F4cGbdqgw8)
@@ -183,7 +151,7 @@ Soundness is a **decentralized verification network** built with:
 
 ---
 
-## 📄 License
+## License
 
 This guide is under the [MIT License](LICENSE). For Soundness Layer codebase license, check the [official repository](https://github.com/SoundnessLabs/soundness-layer).
 
