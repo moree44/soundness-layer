@@ -64,9 +64,9 @@ Play supported games on the Soundness testnet to generate proofs. After winning,
 
 **Example: What you'll receive after winning a game:**
 
-![Soundness CLI Send Command Example](images/cli-send-example.png)
+![Soundness CLI Send Command Example](https://github.com/moree44/soundness-layer/blob/main/Screenshot%202025-07-26%20160945.png)
 
-*The system will provide you with the complete command including your proof blob ID and all necessary parameters.*
+*The system will provide you with the complete command including your proof blob ID and all necessary parameters - simply copy and paste the provided command.*
 
 ### Step 3: Submit Your Proof for Verification
 Once you have your proof and Blob ID, submit it for verification:
@@ -166,6 +166,22 @@ tar -czf soundness-keys-backup.tar.gz ~/.soundness/keys/
 Soundness is a **decentralized verification network** built with:
 - **[Walrus](https://www.walrus.xyz/)** for data availability
 - **[Sui](https://sui.io/)** for sequencing
+
+**Key Features:**
+- ⚡ Low latency verification
+- 🚀 High throughput processing
+- 🔗 Cross-chain compatibility
+- 🔐 Restaking-backed security
+
+---
+
+## 📞 Support & Community
+
+- [Website](https://soundness.xyz/)
+- [Discord](https://discord.gg/F4cGbdqgw8)
+- [GitHub](https://github.com/SoundnessLabs/soundness-layer)
+
+---
 
 ## 📄 License
 
