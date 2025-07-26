@@ -1,6 +1,6 @@
 # Soundness CLI - One-Click Installation Guide
 
-> **Easily set up the Soundness CLI tool for testnet interaction. Designed for beginners and developers alike.**
+> **Easily set up the Soundness CLI tool for testnet interaction**
 
 Soundness Layer is a decentralized verification protocol that offers low latency, high throughput, and cross-chain compatibility. This guide will help you install and use the Soundness CLI in just a few steps.
 
@@ -27,7 +27,7 @@ soundness-cli generate-key --name my-wallet
 
 1. Go to [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
 2. Click **"<> Code"** → **"Codespaces"** → **"Create codespace on main"**
-3. Wait for environment to initialize
+3. Wait for the environment to initialize
 4. Run the following install command:
 
 ```bash
@@ -50,19 +50,16 @@ soundnessup version
 ```bash
 soundness-cli generate-key --name my-wallet
 ```
-
-### List Your Keys:
-
-```bash
-soundness-cli list-keys
-```
-
 ### Import Existing Mnemonic:
 
 ```bash
 soundness-cli import-key --name my-wallet --mnemonic "your twelve word seed here"
 ```
+### List Your Keys:
 
+```bash
+soundness-cli list-keys
+```
 >  **Your keys are stored locally at:** `~/.soundness/keys/`
 
 ---
