@@ -1,70 +1,185 @@
-# Soundness Layer
+# Soundness CLI - One-Click Installation Guide
 
-![Soundness Layer Banner](banner.png)
+> **Easily set up the Soundness CLI tool for testnet interaction. Designed for beginners and developers alike.**
 
-Soundness Layer is a decentralized verification layer that provides low latency, high throughput, and cross-chain compatibility for blockchain networks. Built on [Walrus](https://www.walrus.xyz/) for data availability and [Sui](https://sui.io/) for sequencing, it delivers a robust infrastructure for data verification. The network's security is maintained through an innovative restaking protocol.
+Soundness Layer is a decentralized verification protocol that offers low latency, high throughput, and cross-chain compatibility. This guide will help you install and use the Soundness CLI in just a few steps.
 
-[Twitter (X)](https://x.com/SoundnessLabs) | [Discord](https://discord.gg/SoundnessLabs) | [Telegram](https://t.me/SoundnessLabs) | [Website](https://soundness.xyz/)
+---
 
-> ⚠️ **Warning**: This is a testnet implementation. Do not use in production. The protocol is still under development and may contain bugs or security vulnerabilities. We are gradually rolling out features and open sourcing components as we progress through our development roadmap.
+##  Installation Methods
 
-## License
+###  Option 1: Manual Installation
 
-This project is licensed under the [MIT License](./LICENSE).
+```bash
+# 1. Clone the repository
+git clone https://github.com/moree44/soundness-layer.git
+cd soundness-layer
 
-## Beginner Installation Tutorial
+# 2. Run the install script
+chmod +x install-soundness.sh
+./install-soundness.sh
 
-Follow these steps to install Soundness CLI on Linux/WSL:
+# 3. Generate your first wallet key
+soundness-cli generate-key --name my-wallet
+```
 
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/moree44/soundness-layer.git
-   cd soundness-layer
-   ```
+###  Option 2: GitHub Codespaces (Zero Setup)
 
-2. **Run the installation script:**
-   ```bash
-   chmod +x install-soundness.sh
-   ./install-soundness.sh
-   ```
-   This script will:
-   - Install required dependencies (curl, wget, git, build-essential, pkg-config, libssl-dev)
-   - Install Rust (if not already installed)
-   - Build the Soundness CLI
-   - Add the binary to your PATH for global access
-   - Create configuration directories at `~/.soundness`
+1. Go to [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
+2. Click **"<> Code"** → **"Codespaces"** → **"Create codespace on main"**
+3. Wait for environment to initialize
+4. Run the following install command:
 
-3. **Verify the installation:**
-   After installation, check with the following commands:
-   ```bash
-   soundness-cli --version
-   soundness-cli --help
-   ```
+```bash
+curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/install-soundness.sh | bash
+```
 
-4. **Next steps:**
-   - Generate a new key:
-     ```bash
-     soundness-cli generate-key
-     ```
-   - List your keys:
-     ```bash
-     soundness-cli list-keys
-     ```
+5. Verify installation:
 
-5. **Notes:**
-   - If the `soundness-cli` command is not recognized, try opening a new terminal or run:
-     ```bash
-     source ~/.bashrc
-     ```
-   - Make sure `~/.local/bin` is included in your PATH.
+```bash
+soundness-cli --version
+soundnessup version
+```
 
-6. **Testnet Information:**
-   - Default endpoint: https://testnet.soundness.xyz
-   - Discord: https://discord.gg/F4cGbdqgw8
-   - Telegram: https://t.me/SoundnessLabs
-   - Website: https://soundness.xyz/
+---
 
-7. **Security:**
-   - Backup your private key securely
-   - Never share your private key
-   - This is for testnet only, not for production
+##  Managing Your Keys
+
+### Generate a New Key:
+
+```bash
+soundness-cli generate-key --name my-wallet
+```
+
+### List Your Keys:
+
+```bash
+soundness-cli list-keys
+```
+
+### Import Existing Mnemonic:
+
+```bash
+soundness-cli import-key --name my-wallet --mnemonic "your twelve word seed here"
+```
+
+>  **Your keys are stored locally at:** `~/.soundness/keys/`
+
+---
+
+##  Prerequisites
+
+### GitHub Codespaces:
+
+* ✅ GitHub account
+* ✅ Web browser
+
+### Local Setup:
+
+* ✅ Linux/macOS (Ubuntu 20.04+ recommended)
+* ✅ Internet connection
+* ✅ Git & curl
+* ✅ Basic terminal usage
+
+---
+
+## 🔧 Common CLI Commands
+
+```bash
+# Show CLI help
+soundness-cli --help
+
+# Generate key
+soundness-cli generate-key --name my-wallet
+
+# Check installed version
+soundness-cli --version
+
+# Send proof (advanced)
+soundness-cli send --help
+```
+
+---
+
+##  Configuration & Endpoints
+
+* ✅ Default endpoint: `https://testnet.soundness.xyz`
+* ✅ All config and logs: `~/.soundness/`
+
+---
+
+## 🛠 Troubleshooting
+
+### Command not found: `soundness-cli`
+
+```bash
+source ~/.bashrc
+```
+
+### Missing dependencies:
+
+```bash
+sudo apt install -y build-essential pkg-config libssl-dev
+```
+
+### Rust not found:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+```
+
+### Permission denied:
+
+```bash
+chmod +x ~/.local/bin/soundness-cli
+```
+
+### Rebuild manually:
+
+```bash
+cd soundness-layer/soundness-cli
+cargo build --release
+```
+
+---
+
+##  Backup Your Keys
+
+```bash
+mkdir -p ~/soundness-backup
+cp ~/.soundness/keys/* ~/soundness-backup/
+tar -czf soundness-keys-backup.tar.gz ~/.soundness/keys/
+```
+
+---
+
+
+##  What is Soundness Layer?
+
+Soundness is a **decentralized verification network**, built with:
+
+* 🔹 **[Walrus](https://www.walrus.xyz/)** for data availability
+* 🔹 **[Sui](https://sui.io/)** for sequencing
+
+### Highlights:
+
+* ⚡ **Low latency**
+* 🚀 **High throughput**
+* 🔗 **Cross-chain support**
+* 🔐 **Restaking-backed security**
+
+---
+
+---
+
+## 📄 License
+
+This guide is under the [MIT License](LICENSE). For the Soundness Layer codebase license, check the [official repository](https://github.com/SoundnessLabs/soundness-layer).
+
+---
+
+<div align="center">
+  Made with ❤️ for the Soundness Community  
+  [Website](https://soundness.xyz/) • [Discord](https://discord.gg/F4cGbdqgw8) • [GitHub](https://github.com/SoundnessLabs/soundness-layer)
+</div>
