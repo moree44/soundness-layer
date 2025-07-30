@@ -95,3 +95,58 @@ fi
 # Step 6: Final message
 echo ""
 success "Install completed! Restart your terminal or run: source ~/.bashrc"
+
+# Step 7: Wallet setup menu
+echo ""
+echo -e "${YELLOW}================================${NC}"
+echo -e "${YELLOW}    WALLET SETUP MENU${NC}"
+echo -e "${YELLOW}================================${NC}"
+echo ""
+echo "Choose an option:"
+echo "1) Generate new wallet key"
+echo "2) Import existing mnemonic phrase"
+echo "3) Skip wallet setup (exit)"
+echo ""
+read -p "Enter your choice (1-3): " choice
+
+case $choice in
+    1)
+        echo ""
+        info "Generating new wallet key..."
+        read -p "Enter wallet name (default: my-wallet): " wallet_name
+        wallet_name=${wallet_name:-my-wallet}
+        
+        if soundness-cli generate-key --name "$wallet_name"; then
+            success "New wallet '$wallet_name' generated successfully!"
+        else
+            error "Failed to generate wallet. Please try again manually."
+        fi
+        ;;
+    2)
+        echo ""
+        info "Importing existing mnemonic phrase..."
+        read -p "Enter wallet name (default: my-wallet): " wallet_name
+        wallet_name=${wallet_name:-my-wallet}
+        
+        echo "Enter your 12-word mnemonic phrase (separated by spaces):"
+        read -p "Mnemonic: " mnemonic
+        
+        if soundness-cli import-key --name "$wallet_name" --mnemonic "$mnemonic"; then
+            success "Wallet '$wallet_name' imported successfully!"
+        else
+            error "Failed to import wallet. Please check your mnemonic phrase and try again."
+        fi
+        ;;
+    3)
+        echo ""
+        info "Skipping wallet setup. You can set up your wallet later using:"
+        echo "  soundness-cli generate-key --name my-wallet"
+        echo "  soundness-cli import-key --name my-wallet --mnemonic \"your twelve word seed here\""
+        ;;
+    *)
+        error "Invalid choice. Exiting without wallet setup."
+        ;;
+esac
+
+echo ""
+success "Setup complete! You can now use soundness-cli commands."
