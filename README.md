@@ -20,10 +20,6 @@ curl -sSL https://raw.githubusercontent.com/moree44/soundness-layer/main/install
 ```bash
 source ~/.bashrc
 ```
-6. Verify installation:
-```bash
-soundness-cli --version
-```
 
 ### Option 2: Manual Installation
 ```bash
