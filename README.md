@@ -40,16 +40,40 @@ source ~/.bashrc
 
 ---
 
-## Step-by-Step Usage
+## Wallet Setup
 
-### Step 1: Generate Your Wallet Key
+After installation, the script will automatically present you with a **Wallet Setup Menu**:
+
+```
+================================
+    WALLET SETUP MENU
+================================
+
+Choose an option:
+1) Generate new wallet key
+2) Import existing mnemonic phrase
+3) Skip wallet setup (exit)
+
+Enter your choice (1-3):
+```
+
+### Option 1: Generate New Wallet
+- Choose option **1** from the menu
+- Enter your desired wallet name (or press Enter for default: `my-wallet`)
+- The system will generate a new wallet key for you
+
+### Option 2: Import Existing Wallet
+- Choose option **2** from the menu
+- Enter your desired wallet name (or press Enter for default: `my-wallet`)
+- Enter your 12-word mnemonic phrase (separated by spaces)
+- The system will import your existing wallet
+
+### Option 3: Skip Setup
+- Choose option **3** to skip wallet setup
+- You can set up your wallet later using manual commands
+
+### Manual Commands (if needed later)
 ```bash
-# Create a new wallet
-soundness-cli generate-key --name my-wallet
-
-# Or import existing mnemonic
-soundness-cli import-key --name my-wallet --mnemonic "your twelve word seed here"
-
 # List all keys
 soundness-cli list-keys
 ```
