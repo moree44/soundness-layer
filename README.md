@@ -9,10 +9,9 @@ Soundness Layer is a decentralized verification protocol offering low latency, h
 ## Quick Installation
 
 ### Option 1: GitHub Codespaces (Recommended - Zero Setup)
-1. Visit the [Soundness Layer Repository](https://github.com/moree44/soundness-layer)
-2. Click **"<> Code"** → **"Codespaces"** → **"Create codespace on main"**
-3. Wait for environment setup
-4. Install with one command:
+1. Click **"<> Code"** → **"Codespaces"** → **"Create codespace on main"**
+2. Wait for environment setup
+3. Install with one command:
 ```bash
 chmod +x install-soundness.sh
 ./install-soundness.sh
